@@ -1,0 +1,34 @@
+# Publishes tg-webproxy.sh to dignezzz.github.io/server/ so the short
+# GitHub Pages URL keeps serving the same script.
+#
+# Needs a repository secret PAGES_TOKEN: a fine-grained personal access token
+# with "Contents: read and write" on DigneZzZ/dignezzz.github.io.
+name: Mirror to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths: [tg-webproxy.sh]
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Copy the script into the site repository
+        env:
+          TOKEN: ${{ secrets.PAGES_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then echo "PAGES_TOKEN secret is not set; skipping mirror"; exit 0; fi
+          version="$(grep -m1 -oE '^TGWP_VERSION="[0-9.]+"' tg-webproxy.sh | cut -d'"' -f2)"
+          git clone --depth 1 "https://x-access-token:${TOKEN}@github.com/DigneZzZ/dignezzz.github.io" site
+          cp tg-webproxy.sh site/server/tg-webproxy.sh
+          cd site
+          git config user.name "tg-webproxy mirror"
+          git config user.email "actions@users.noreply.github.com"
+          git add server/tg-webproxy.sh
+          if git diff --cached --quiet; then echo "mirror already up to date"; exit 0; fi
+          git commit -m "Mirror tg-webproxy.sh ${version} from DigneZzZ/tg-webproxy"
+          git push
