@@ -12,7 +12,7 @@ bash <(wget -qO- https://raw.githubusercontent.com/DigneZzZ/tg-webproxy/main/tg-
 
 | Шаг | Что происходит |
 |---|---|
-| 0 | Роль хоста: `single` по Enter, `front` или `backend` для [split-режима](split-mode.md) |
+| 0 | Роль хоста: `single` по Enter, `front` или `backend` для [split-режима](split-mode.md). Сразу за ней проверка доступности Telegram: дата-центры на :8888 и `core.telegram.org`. Закрытые дата-центры = отказ с кодом 3 и советом сменить сервер; для роли `front` проверка не нужна |
 | 1 | Зависимости, внешний IPv4, занятость портов 80/443 |
 | 2 | Домен и почта. Все A-записи домена сверяются с IP сервера сразу при вводе, при расхождении можно ввести другой домен или продолжить осознанно. CDN перед доменом определяется по заголовкам |
 | 3 | Секрет: свой, сгенерированный или оставшийся от прошлой установки |
@@ -48,6 +48,7 @@ bash <(wget -qO- https://raw.githubusercontent.com/DigneZzZ/tg-webproxy/main/tg-
 | `TGWP_YES=1` | отвечать «да» на все подтверждения |
 | `TGWP_NO_UPDATE_CHECK=1` | не проверять новую версию скрипта |
 | `TGWP_TG_MIRROR` | зеркало `core.telegram.org`, если сеть его блокирует; альтернатива: файлы в `/opt/tgwebproxy/tg/` ([диагностика](troubleshooting.md)) |
+| `TGWP_SKIP_REACH=1` | не проверять доступность Telegram перед установкой (на свой риск) |
 | `TGWP_ROLE`, `TGWP_BACKEND`, `TGWP_SECRETS`, `TGWP_ALLOW_FROM` | [split-режим](split-mode.md) |
 
 ## Свой сайт-прикрытие
