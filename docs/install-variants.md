@@ -47,6 +47,7 @@ bash <(wget -qO- https://raw.githubusercontent.com/DigneZzZ/tg-webproxy/main/tg-
 | `TGWP_REF` | закрепить коммит, тег или ветку `tproxy-server` |
 | `TGWP_YES=1` | отвечать «да» на все подтверждения |
 | `TGWP_NO_UPDATE_CHECK=1` | не проверять новую версию скрипта |
+| `TGWP_TG_MIRROR` | зеркало `core.telegram.org`, если сеть его блокирует; альтернатива: файлы в `/opt/tgwebproxy/tg/` ([диагностика](troubleshooting.md)) |
 | `TGWP_ROLE`, `TGWP_BACKEND`, `TGWP_SECRETS`, `TGWP_ALLOW_FROM` | [split-режим](split-mode.md) |
 
 ## Свой сайт-прикрытие

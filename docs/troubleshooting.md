@@ -17,6 +17,17 @@ chmod -R a+rX /opt/MTProxy && systemctl restart mtproxy && curl -fsS http://127.
 **`tproxy-server did not become ready`.**
 Relay не увидел MTProxy на 127.0.0.1:2398. `journalctl -u mtproxy -n 50`: чаще всего MTProxy не стартует из-за секрета не 32 hex, пустого `-S` или недоступного `core.telegram.org` при загрузке `proxy-secret`.
 
+**`curl: (22) The requested URL returned error: 404` сразу после сборки MTProxy.**
+Сеть сервера блокирует `core.telegram.org` и подставляет 404-заглушку, а апстримный `install-mtproxy.sh` качает оттуда `proxy-secret` и список дата-центров без вариантов. Установщик проверяет это на шаге «Подготовка» и печатает инструкцию. Обход: скачайте оба файла на любой машине с доступом и положите их в `/opt/tgwebproxy/tg/`, либо укажите зеркало `TGWP_TG_MIRROR=https://host/path`, где лежат `getProxySecret` и `getProxyConfig`. Шим `curl` в `PATH` подставит их апстримному скрипту. Проверьте заодно, что дата-центр Telegram доступен: `timeout 3 bash -c '</dev/tcp/149.154.175.50/8888'`. Если и он закрыт, MTProxy на этом сервере работать не будет.
+
+```bash
+curl -o proxy-secret https://core.telegram.org/getProxySecret
+curl -o proxy-multi.conf https://core.telegram.org/getProxyConfig
+scp proxy-secret proxy-multi.conf root@server:/opt/tgwebproxy/tg/
+```
+
+Суточный таймер `refresh-mtproxy-config` в такой сети тоже не сможет обновлять конфигурацию, MTProxy продолжит работать со старой.
+
 **Домен не резолвится или указывает на другой IP.**
 Проверка идёт при вводе домена. Добавьте A-запись на IP сервера и дождитесь обновления DNS; продолжать без записи можно, но Let's Encrypt не выдаст сертификат, и Caddy будет повторять попытки.
 
